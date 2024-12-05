@@ -1,0 +1,23 @@
+#https://wiki.merionet.ru/articles/kak-vypolnit-balansirovku-nagruzki-s-pomoshhiu-haproxy?utm_source=knowledgebase
+
+global
+    stats socket /run/haproxy/admin.sock mode 660 level admin
+defaults
+    mode http
+    timeout client 10s
+    timeout connect 5s
+    timeout server 10s
+    timeout http-request 10s
+frontend my_frontend
+    bind 127.0.0.1:80
+    default_backend my_backend
+backend my_backend
+    balance leastconn
+    server server1 127.0.0.1:8001
+    server server2 127.0.0.1:8002
+listen stats
+    bind :8000
+    stats enable
+    stats uri /monitoring
+    stats auth username:password
+
